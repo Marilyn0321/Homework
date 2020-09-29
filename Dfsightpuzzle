@@ -126,30 +126,23 @@ def judge(src,target):
     else:
         return False
 
-#初始状态
 startStat = [[2, 8, 3], [1, 0, 4], [7, 6, 5]]
 g = grid(startStat)
-#判断所给的八数码受否有解
 if(judge(startStat,g.target)!=True):
     print("所给八数码无解，请检查输入")
     exit(1)
-#visited储存的是已经扩展过的节点
 visited = []
 time = 0
-#用递归的方式进行DFS遍历
 def DFSUtil(v, visited):
     global time
-    #判断是否达到深度界限
     if (v.G > 4):
         return
     time+=1
-    #判断是否已经找到解
     if (v.H == 0):
         print("found and times", time, "moves:", v.G)
         v.seeAns()
         exit(1)
 
-    #对当前节点进行扩展
     visited.append(v.stat)
     expandStats = v.expand()
     w = []
@@ -161,11 +154,7 @@ def DFSUtil(v, visited):
             w.append(tmpG)
     for vadj in w:
         DFSUtil(vadj, visited)
-    #visited查重只对一条路，不是全局的，每条路开始时都为空
-    #因为如果全局查重，会导致例如某条路在第100层找到的状态，在另一条路是第2层找到也会被当做重复
-    #进而导致明明可能会找到解的路被放弃
     visited.pop()
 
 DFSUtil(g, visited)
-#如果找到解程序会在中途退出，走到下面这一步证明没有找到解
 print("在当前深度下没有找到解，请尝试增加搜索深度")
